@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<title>R-package binomialMix tutorial</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">R-package binomialMix tutorial</h1>
+
+
+
+<p>Copyright 2019 Faustine Bousquet (<a href="mailto:faustine.bousquet@tabmo.io">faustine.bousquet@tabmo.io</a> or <a href="mailto:faustine.bousquet@umontpellier.fr">faustine.bousquet@umontpellier.fr</a>) from TabMo and IMAG (Institut Montpelliérain Alexander Grothendieck, University of Montpellier). The binomialMix package is available under the Apache2 license.</p>
+<div id="description" class="section level2">
+<h2>Description</h2>
+<p>The <strong>binomialMix</strong> package provides a clustering method for longitudinal and non gaussian data. It uses an EM algorithm for GLM. For now, a model-based clustering for mixture of binomial data is available.</p>
+</div>
+<div id="step-1-installation" class="section level2">
+<h2>STEP 1: Installation</h2>
+<p>You can install the <code>binomialMix</code> R package with the following R command:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages(&quot;devtools&quot;)</span>
+devtools<span class="op">::</span><span class="kw">install_git</span>(<span class="st">&quot;https://gitlab.com/tabmo/binomialmix&quot;</span>)
+devtools<span class="op">::</span><span class="kw">install_gitlab</span>(<span class="st">&quot;tabmo/binomialMix&quot;</span>)</code></pre></div>
+<p>You can also directly use the git repository :</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">git</span> clone https://gitlab.com/tabmo/binomialMix</code></pre></div>
+<p>Once you cloned the git repository, you can run to install the <code>binomialMix</code> package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">install</span>(<span class="st">&quot;/path/to/binomialMix/pkg&quot;</span>) <span class="co"># edit the path</span></code></pre></div>
+</div>
+<div id="step-2-use-case-tutorial" class="section level2">
+<h2>STEP 2: Use-case tutorial</h2>
+<p>Imagine that you are working for an advertising company. You need to make groups of campaigns with similar profiles.</p>
+<div id="first-you-need-to-import-the-following-library" class="section level3">
+<h3>1. First, you need to import the following library:</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># our library for mixture modelling:</span>
+<span class="kw">library</span>(binomialMix)
+<span class="co"># if not installed : </span>
+<span class="co">#install.packages(&quot;pander&quot;, repos=&quot;http://cran.us.r-project.org&quot;)</span>
+<span class="co">#install.packages(&quot;ggplot2&quot;, repos=&quot;http://cran.us.r-project.org&quot;)</span>
+<span class="co">#library(pander)</span>
+<span class="kw">library</span>(qpdf)</code></pre></div>
+</div>
+<div id="lets-have-a-look-at-the-dataset" class="section level3">
+<h3>2. Let’s have a look at the dataset:</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(adcampaign)</code></pre></div>
+<pre><code>##   id timestamp_ymd yearDay day timeSlot app_or_site impressions click
+## 1 14    2019-01-01       1   3        1         app        2675   117
+## 2 14    2019-01-01       1   3        1         app         729    16
+## 3 14    2019-01-01       1   3        2         app        1016    33
+## 4 14    2019-01-01       1   3        2         app         342     6
+## 5 14    2019-01-01       1   3        3         app        3431    92
+## 6 14    2019-01-01       1   3        3         app         864     9
+##          ctr
+## 1 0.04373832
+## 2 0.02194787
+## 3 0.03248031
+## 4 0.01754386
+## 5 0.02681434
+## 6 0.01041667</code></pre>
+<p><em>NB : Of course, you can use your own data. The format you need to have is the following:</em></p>
+<ul>
+<li><p>a <em>dataframe</em> type is needed (ex: <strong>adcampaign</strong> from binomialMix)</p></li>
+<li><p>a column with <em>factor</em> id representing the objects you want to cluster (ex: <strong>id</strong> from adcampaign )</p></li>
+<li><p>a target value (ex: <strong>ctr</strong> from adcampaign)</p></li>
+<li><p>a weighted value variable as we are in case of binomial data (ex: <strong>impressions</strong> from adcampaign)</p></li>
+<li><p>at least, one column as <em>explicative variable</em> (ex: <strong>day</strong> from adcampaign)</p></li>
+</ul>
+</div>
+<div id="lets-make-some-clusters" class="section level3">
+<h3>3. Let’s make some clusters!</h3>
+<p>The objective of the study is to group advertising campaigns into clusters. We observe by campaign, time slot, day of week and ad slot campaign (like app or site) the observed number of clicks and impressions. CTR corresponds to the number of click on the number of impressions. CTR value differs a lot from one observation to another, as well as the total length of a campaign. Some last fews days and others broadcast for months. Then, each campaigns (<strong>column “id”</strong>) is composed of n_c observations from the whole dataset and we have repeated mesure for a same id level. The available explicative variables are:</p>
+<ul>
+<li><p>day</p></li>
+<li><p>timeSlot</p></li>
+<li><p>app_or_site</p></li>
+</ul>
+<p>Let’s now try to cluster our dataset into K groups.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The dataframe to cluster: </span>
+df_tocluster&lt;-adcampaign
+<span class="co"># We choose two explainable variables:</span>
+model_formula&lt;-<span class="st">&quot;ctr~timeSlot+day&quot;</span>
+<span class="co"># As we are in a case of binomial mixture model, we define the weighted variable</span>
+weighted_variable&lt;-<span class="st">&quot;impressions&quot;</span>
+<span class="co"># We want to analyse results for K=3.</span>
+K&lt;-<span class="dv">3</span>
+<span class="co"># We define the individual to cluster:</span>
+col_id&lt;-<span class="st">&quot;id&quot;</span>
+<span class="kw">set.seed</span>(<span class="dv">1992</span>)
+<span class="co"># We run our EM algorithm developped for mixture of binomial and longitudinal dataset:</span>
+result_K3&lt;-<span class="kw">runEM</span>(model_formula,
+                weighted_variable,
+                K,
+                df_tocluster,
+                col_id)</code></pre></div>
+</div>
+<div id="analysis-of-clustering-results" class="section level3">
+<h3>4. Analysis of clustering results:</h3>
+<p>The output of the runEM function provides the following values:</p>
+<ol style="list-style-type: decimal">
+<li><p>Loglikelihood for each EM iteration</p></li>
+<li><p>Estimation of model parameters (<em>β</em>, <em>λ</em>, <em>π</em> )</p></li>
+<li><p>BIC and ICL values</p></li>
+<li><p>Number of fisher iteration needed for each M-Step</p></li>
+</ol>
+<p><strong>Plotting evolution of Loglikelihood over iteration</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">qplot</span>(<span class="kw">seq_along</span>(result_K3[[<span class="dv">1</span>]]), result_K3[[<span class="dv">1</span>]],
+      <span class="dt">xlab=</span><span class="st">&quot;Number of EM iterations&quot;</span>,
+      <span class="dt">ylab=</span><span class="st">&quot;Loglikelihood&quot;</span>)</code></pre></div>
+<p><strong>Estimated β parameters</strong></p>
+<p>Let’s have a look at the estimated parameters for each cluster k. We only show the estimation from the last EM iteration in the following.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result_K3[[<span class="dv">3</span>]][[<span class="kw">length</span>(result_K3[[<span class="dv">3</span>]])]]</code></pre></div>
+<pre><code>##              k=1         k=2        k=3
+## [1,] -3.27524617 -6.02001952 -5.0421272
+## [2,]  0.31581767  0.12798712  0.4729844
+## [3,]  0.20178096  0.26338824  0.5358001
+## [4,]  0.26372976  0.43174257  0.7074703
+## [5,]  0.09812297  0.41739277  0.8413444
+## [6,]  0.08388539  0.09588596  0.7098054</code></pre>
+<p><strong>Estimated proportion of campaigns λ for each cluster</strong></p>
+<p>We want to have a look at the repartition of our campaigns for adcampaign dataset to analyze the size of each cluster. We only display value for the last iteration of EM algorithm.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result_K3[[<span class="dv">3</span>]][[<span class="kw">length</span>(result_K3[[<span class="dv">3</span>]])]]</code></pre></div>
+<pre><code>## [1] 0.114300 0.498075 0.387625</code></pre>
+<p><strong>Matrix of proability for each campaign to belong to the different clusters</strong></p>
+<p>We analyze the contribution of each campaign to the K clusters. The columns define the campaigns and the rows the different cluster k.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># We only display the results for the first 10 campaigns (10 columns)</span>
+<span class="kw">set.seed</span>(<span class="dv">1992</span>)
+result_K3[[<span class="dv">4</span>]][[<span class="kw">length</span>(result_K3[[<span class="dv">4</span>]])]][,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</code></pre></div>
+<pre><code>##     ID_1 ID_2 ID_3 ID_4 ID_5 ID_6 ID_7  ID_8  ID_9 ID_10
+## k=1    0    0    0    0    0    0    0 0.000 0.000     0
+## k=2    0    0    1    0    0    0    1 0.999 0.096     1
+## k=3    1    1    0    1    1    1    0 0.001 0.904     0</code></pre>
+<p><strong>Analyze of BIC and ICL values</strong></p>
+<p>The analyze of BIC and ICL values is essential when we want to choose the right number of clusters. We can compare BIC/ICL values and choose the K that minimize one or both of these criteria.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result_K3[[<span class="dv">5</span>]][[<span class="kw">length</span>(result_K3[[<span class="dv">5</span>]])]] <span class="co"># BIC value </span>
+result_K3[[<span class="dv">6</span>]][[<span class="kw">length</span>(result_K3[[<span class="dv">6</span>]])]] <span class="co"># ICL value</span></code></pre></div>
+<pre><code>## [1] &quot;BIC=372360.14&quot;</code></pre>
+<pre><code>## [1] &quot;ICL=372367.72&quot;</code></pre>
+<p><strong>Analyze of Fisher scoring number of iterations for each M step</strong></p>
+<p>If we want to know the number of Fisher scoring iterations at each M step, we can display the following matrix.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">matrix</span>(<span class="kw">unlist</span>(result_K3[[<span class="dv">7</span>]]),<span class="dt">ncol=</span><span class="kw">length</span>(result_K3[[<span class="dv">7</span>]])<span class="op">-</span><span class="dv">1</span>)</code></pre></div>
+<pre><code>##     iter_1 iter_2 iter_3 iter_4 iter_5 iter_6 iter_7 iter_8
+## k=1      4      3      3      2      1      1      1      1
+## k=2      4      3      1      3      2      1      1      1
+## k=3      4      3      3      2      2      1      1      1</code></pre>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

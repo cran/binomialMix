@@ -1,0 +1,197 @@
+---
+title: "R-package binomialMix tutorial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial for binomialMix}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+Copyright 2019 Faustine Bousquet (faustine.bousquet@tabmo.io or faustine.bousquet@umontpellier.fr) from TabMo and IMAG (Institut Montpelliérain Alexander Grothendieck, University of Montpellier). The binomialMix package is available under the Apache2 license.
+
+Description
+-----------
+
+The **binomialMix** package provides a clustering method for longitudinal and non gaussian data. It uses an EM algorithm for GLM. For now, a model-based clustering for mixture of binomial data is available. 
+
+STEP 1: Installation
+---------------------
+You can install the `binomialMix` R package with the following R command:
+
+``` {r,eval=FALSE}
+# install.packages("devtools")
+devtools::install_git("https://gitlab.com/tabmo/binomialmix")
+devtools::install_gitlab("tabmo/binomialMix")
+```
+
+You can also directly use the git repository :
+
+``` {bash,eval=FALSE}
+git clone https://gitlab.com/tabmo/binomialMix
+```
+
+Once you cloned the git repository, you can run to install the `binomialMix` package:
+
+``` {r,eval=FALSE}
+devtools::install("/path/to/binomialMix/pkg") # edit the path
+```
+
+STEP 2: Use-case tutorial
+---------------------
+Imagine that you are working for an advertising company. You need to make groups of campaigns with similar profiles. 
+
+### 1. First, you need to import the following library:
+
+``` {r, echo = TRUE}
+# our library for mixture modelling:
+library(binomialMix)
+# if not installed : 
+#install.packages("pander", repos="http://cran.us.r-project.org")
+#install.packages("ggplot2", repos="http://cran.us.r-project.org")
+#library(pander)
+library(qpdf)
+```
+
+### 2. Let's have a look at the dataset:
+
+``` {r, echo = TRUE}
+data(adcampaign)
+```
+
+```{r, echo=FALSE}
+#pandoc.table(head(adcampaign),split.table=Inf)
+head(adcampaign)
+```
+
+_NB : Of course, you can use your own data. The format you need to have is the following:_ 
+
+* a _dataframe_ type is needed (ex: __adcampaign__ from binomialMix)
+
+* a column with _factor_ id representing the objects you want to cluster (ex: __id__ from adcampaign )
+
+* a target value (ex: __ctr__ from adcampaign)
+
+* a weighted value variable as we are in case of binomial data (ex: __impressions__ from adcampaign)
+
+* at least, one column as _explicative variable_ (ex: __day__ from adcampaign)
+
+### 3. Let's make some clusters!
+
+The objective of the study is to group advertising campaigns into clusters. We observe by campaign, time slot, day of week and ad slot campaign (like app or site) the observed number of clicks and impressions. CTR corresponds to the number of click on the number of impressions. CTR value differs a lot from one observation to another, as well as the total length of a campaign. Some last fews days and others broadcast for months. Then, each campaigns (__column "id"__) is composed of n\_c observations from the whole dataset and we have repeated mesure for a same id level. The available explicative variables are: 
+
+* day
+
+* timeSlot
+
+* app\_or\_site
+
+Let's now try to cluster our dataset into K groups. 
+``` {r,eval=TRUE}
+# The dataframe to cluster: 
+df_tocluster<-adcampaign
+# We choose two explainable variables:
+model_formula<-"ctr~timeSlot+day"
+# As we are in a case of binomial mixture model, we define the weighted variable
+weighted_variable<-"impressions"
+# We want to analyse results for K=3.
+K<-3
+# We define the individual to cluster:
+col_id<-"id"
+set.seed(1992)
+# We run our EM algorithm developped for mixture of binomial and longitudinal dataset:
+result_K3<-runEM(model_formula,
+                weighted_variable,
+                K,
+                df_tocluster,
+                col_id)
+```
+
+### 4. Analysis of clustering results:
+
+The output of the runEM function provides the following values:
+
+1. Loglikelihood for each EM iteration
+
+1. Estimation of model parameters (*β*, *λ*, *π* )
+
+1. BIC and ICL values 
+
+1. Number of fisher iteration needed for each M-Step
+
+**Plotting evolution of Loglikelihood over iteration**
+
+``` {r, eval=FALSE,results = "asis"}
+library(ggplot2)
+qplot(seq_along(result_K3[[1]]), result_K3[[1]],
+      xlab="Number of EM iterations",
+      ylab="Loglikelihood")
+```
+
+**Estimated β parameters**
+
+Let's have a look at the estimated parameters for each cluster k. We only show the estimation from the last EM iteration in the following.
+```{r,eval=FALSE,echo=TRUE}
+result_K3[[3]][[length(result_K3[[3]])]]
+```
+
+``` {r, echo=FALSE}
+df_beta<-result_K3[[2]][[length(result_K3[[2]])]]
+colnames(df_beta)<-paste0("k=",c(1:3))
+#pandoc.table(head(df_beta),split.table=Inf,digits=4)
+head(df_beta)
+```
+
+**Estimated proportion of campaigns λ for each cluster**
+
+We want to have a look at the repartition of our campaigns for adcampaign dataset to analyze the size of each cluster. We only display value for the last iteration of EM algorithm. 
+```{r,eval=TRUE,echo=TRUE}
+result_K3[[3]][[length(result_K3[[3]])]]
+```
+
+**Matrix of proability for each campaign to belong to the different clusters**
+
+We analyze the contribution of each campaign to the K clusters. The columns define the campaigns and the rows the different cluster k. 
+```{r,echo=TRUE,eval=FALSE}
+# We only display the results for the first 10 campaigns (10 columns)
+set.seed(1992)
+result_K3[[4]][[length(result_K3[[4]])]][,1:10]
+```
+
+``` {r, echo=FALSE}
+# We only display the results for the first 10 campaigns (10 columns)
+df_proba<-as.data.frame(result_K3[[4]][[length(result_K3[[4]])]][,1:10])
+colnames(df_proba)<-paste0("ID_",c(1:10))
+rownames(df_proba)<-paste0("k=",c(1:3))
+#pandoc.table(df_proba,split.table=Inf,digits=4)
+head(df_proba)
+```
+
+**Analyze of BIC and ICL values**
+
+The analyze of BIC and ICL values is essential when we want to choose the right number of clusters. We can compare BIC/ICL values and choose the K that minimize one or both of these criteria. 
+
+```{r,eval=FALSE,echo=TRUE}
+result_K3[[5]][[length(result_K3[[5]])]] # BIC value 
+result_K3[[6]][[length(result_K3[[6]])]] # ICL value
+```
+
+```{r,eval=TRUE,echo=FALSE}
+paste0("BIC=",round(result_K3[[5]][[length(result_K3[[5]])]],2))
+paste0("ICL=",round(result_K3[[6]][[length(result_K3[[6]])]],2))
+```
+
+**Analyze of Fisher scoring number of iterations for each M step**
+
+If we want to know the number of Fisher scoring iterations at each M step, we can display the following matrix.
+```{r,eval=FALSE,echo=TRUE}
+matrix(unlist(result_K3[[7]]),ncol=length(result_K3[[7]])-1)
+```
+
+``` {r, echo=FALSE}
+#nrow is equal to the number of cluster
+#ncol is equal to the number of iteration
+df_fisher<-as.data.frame(matrix(unlist(result_K3[[7]]),ncol=length(result_K3[[7]])-1))
+colnames(df_fisher)<-paste0("iter_",c(1:(length(result_K3[[7]])-1)))
+rownames(df_fisher)<-paste0("k=",c(1:3))
+#pandoc.table(df_fisher,split.table=Inf)
+head(df_fisher)
+```

@@ -1,4 +1,4 @@
-b22f5b71d1ce97848b7cd36de352ae0f *DESCRIPTION
+307bf5401a9413c392ccd5cec2859c95 *DESCRIPTION
 c7bcb2b19e5c71d97e6928af62f89d0f *NAMESPACE
 49b02a514ff6f225b4bd727b9b85b20f *R/Incomplete_Loglikelihood_binomiale.R
 d259f9c62b2991bfdf82ab4066432b6c *R/data.R
@@ -18,7 +18,7 @@ ed2c8a3ac7356ab7b3811b705eb6672a *R/log_density_binom.R
 9297744f061645b4db5b960ca9d5c6f9 *R/update_w.R
 e6ed7d9e5204e27ebb54658c9a8531d1 *R/update_z.R
 ec8808633ec3b734e63a91f1bd08ee6f *README.md
-722324962da77b6cd497e4ae75a517e5 *build/vignette.rds
+b785177b0c18b492ff535d11110d9081 *build/vignette.rds
 d1356da8d41e494e50f2456d32f0c2c8 *data/adcampaign.rda
 a18d0c013f3f8121ed1b0d75fd3a39f4 *inst/doc/binomialMix.R
 e197945d1bf7ac555ce1070522c72d21 *inst/doc/binomialMix.Rmd
@@ -41,12 +41,11 @@ b10d5d6e2ba5f5deac52921bb2026fb0 *man/update_tau.Rd
 cfd8d3b042c55ffcf7b00c977a07a175 *man/update_w.Rd
 8f8706a6f61a4dfcc940f3dcaf59289a *man/update_z.Rd
 cee6de9273ea52048a9566b2103541f6 *tests/testthat.R
-06e8b450a64b3e1a13decb66babf02e2 *tests/testthat/test-extract_id.R
+1b44ed95f5e9c4174afb5745ae9ebc0b *tests/testthat/test-extract_id.R
 084475c984e064c70a5e9e60b0f9bab9 *tests/testthat/test-extract_target.R
 656ed22dc00ccb1b2455d7d2249f093f *tests/testthat/test-extract_variables.R
-a96738493a31e0b362a8092de5f5361c *tests/testthat/test-init-beta.R
-1e5a5fdad517df6f056138b3d1a05e90 *tests/testthat/test-init_design_matrices.R
+c38a59fc880944e143691414c6452e77 *tests/testthat/test-init_design_matrices.R
 ab8f599b645118312e4dbaab14cc99d6 *tests/testthat/test-init_lambda.R
-824fd576e6e0188f689c11d8fc6e17b4 *tests/testthat/test-init_tau.R
-fe09d277e0abedc1388b9d2122f8dae3 *tests/testthat/test-log_density_binomial.R
+f21e472e0ae1f4e9d6919e83aaa7e221 *tests/testthat/test-init_tau.R
+d90cf921189420500d4bb11b7fd0181a *tests/testthat/test-log_density_binomial.R
 e197945d1bf7ac555ce1070522c72d21 *vignettes/binomialMix.Rmd

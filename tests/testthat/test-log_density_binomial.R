@@ -5,7 +5,8 @@ test_that("Test the good input/output of the log density", {
   input <- data.frame(success  = c(1,0,2,0,1,0,0,1),
                       cases = c(8, 1,3,3,10,1,2,1),
                       x1     = c(11,12,15,16,18,1,10,10),
-                      group = c("10","20","10","10","20","10","10","20"))
+                      group = c("10","20","10","10","20","10","10","20"),
+                      stringsAsFactors = TRUE)
   input$prop   <- input$success/input$cases
   input_matrix<-list()
   input_group<-list()

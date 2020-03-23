@@ -1,7 +1,7 @@
 Package: binomialMix
 Title: Mixture Models for Binomial and Longitudinal Data
-Version: 1.0
-Date: 2019-11-21
+Version: 1.0.1
+Date: 2020-03-23
 Author: Faustine Bousquet <faustine.bousquet@umontpellier.fr>, Sophie Lèbre <sophie.lebre@umontpellier.fr>, Christian Lavergne <christian.lavergne@umontpellier.fr>
 Maintainer: Faustine Bousquet <faustine.bousquet@umontpellier.fr>
 Description: Provides a clustering method of non-gaussian longitudinal data with a mixture of generalized linear models. The longitudinal data should be defined as repeated observations for each individual. The number of observations for each individual can be different. In runEM(), an expectation-maximization algorithm is developed for both binomial and longitudinal data mixture model.    
@@ -15,6 +15,6 @@ Encoding: UTF-8
 RoxygenNote: 6.1.1
 LazyData: true
 NeedsCompilation: no
-Packaged: 2019-12-06 17:06:12 UTC; faustine
+Packaged: 2020-03-23 11:11:16 UTC; faustine
 Repository: CRAN
-Date/Publication: 2019-12-15 14:00:02 UTC
+Date/Publication: 2020-03-23 11:40:06 UTC

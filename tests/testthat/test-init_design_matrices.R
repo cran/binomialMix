@@ -6,8 +6,10 @@ test_that("design matrices are correctly initialized", {
   df_input <- data.frame(prop  = c(0.125, 0,  0.667, 0.005,  0.9),
                          cases = c(8, 1,3,3,10),
                          x1     = c(11,12,15,16,18),
-                         group = c("a","b","a","a","b"))
-  input         <- rbind(df_input,df_input)
+                         group = c("a","b","a","a","b"),
+                         stringsAsFactors = TRUE)
+  input         <- data.frame(rbind(df_input,df_input,
+                                    stringsAsFactors = TRUE))
   input$success <- rep(c(1, 0), each=nrow(df_input))
   input$cases   <- round(input$cases*ifelse(input$success,input$prop,1-input$prop))
   rm(df_input)
@@ -20,17 +22,19 @@ test_that("design matrices are correctly initialized", {
   input$group_num<-as.factor(as.numeric(input$group))
   expect_is(init_design_matrices(mod_form,input,"group_num"),'list')
   
-  input<-data.frame()
+  input<-data.frame( stringsAsFactors = TRUE)
   expect_error(init_design_matrices(mod_form,input,"group_num"),'dataframe is empty : 0 row, 0 column or both')
   input<-data.frame(prop  = c(0.125, 0,  0.667, 0.005,  0.9),
                     cases = c(8, 1,3,3,10),
                     x1     = c(11,12,15,16,18),
-                    group = c("a","b","a","a","b")) %>% filter(prop>1)
+                    group = c("a","b","a","a","b"),
+                    stringsAsFactors = TRUE) %>% filter(prop>1)
   expect_error(init_design_matrices(mod_form,input,"group_num"),'dataframe is empty : 0 row, 0 column or both')
   input<-data.frame(prop  = c(0.125, 0,  0.667, 0.005,  0.9),
                     cases = c(8, 1,3,3,10),
                     x1     = c(11,12,15,16,18),
-                    group = c("a","b","a","a","b")) %>% dplyr::select(-c(prop,cases,x1,group))
+                    group = c("a","b","a","a","b"),
+                    stringsAsFactors = TRUE) %>% dplyr::select(-c(prop,cases,x1,group))
   expect_error(init_design_matrices(mod_form,input,"group_num"),'dataframe is empty : 0 row, 0 column or both')
 
   
